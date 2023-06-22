@@ -20,7 +20,8 @@ public class DefaultSubscriber implements Subscriber<Object> {
 
     @Override
     public void onNext(Object o) {
-        System.out.println(name + "Received : " + o);
+        String thread = Thread.currentThread().getName();
+        System.out.println(name + "(" + thread + ") " + "Received : " + o);
     }
 
     @Override
