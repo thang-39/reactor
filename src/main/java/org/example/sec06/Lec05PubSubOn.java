@@ -4,24 +4,24 @@ import org.example.courseutil.Util;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
-public class Lec02SubscribeOnDemo {
+public class Lec05PubSubOn {
     public static void main(String[] args) {
         Flux<Object> flux = Flux.create(fluxSink -> {
                     printThreadName("create");
-                    fluxSink.next(1);
+                    for (int i = 0; i < 4; i++) {
+                        fluxSink.next(i);
+                    }
+                    fluxSink.complete();
                 })
-                .subscribeOn(Schedulers.newParallel("parallel-thang"))
                 .doOnNext(i -> printThreadName("next " + i));
 
-        Runnable runnable = () -> flux
-                .doFirst(() -> printThreadName("first2"))
+        flux
+                .publishOn(Schedulers.parallel())
+                .doOnNext(i -> printThreadName("next " + i))
                 .subscribeOn(Schedulers.boundedElastic())
-                .doFirst(() -> printThreadName("first1"))
                 .subscribe(v -> printThreadName("sub " + v));
 
-        for (int i = 0; i < 2; i++) {
-            new Thread(runnable).start();
-        }
+
 
         Util.sleepSeconds(5);
     }
