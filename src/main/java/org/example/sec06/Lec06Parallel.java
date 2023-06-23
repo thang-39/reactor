@@ -4,21 +4,18 @@ import org.example.courseutil.Util;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
-public class Lec05PubSubOn {
-    public static void main(String[] args) {
-        Flux<Object> flux = Flux.create(fluxSink -> {
-                    printThreadName("create");
-                    for (int i = 0; i < 4; i++) {
-                        fluxSink.next(i);
-                    }
-                    fluxSink.complete();
-                })
-                .doOnNext(i -> printThreadName("next " + i));
+import java.util.ArrayList;
+import java.util.List;
 
-        flux
-                .publishOn(Schedulers.parallel())
+public class Lec06Parallel {
+    public static void main(String[] args) {
+
+        Flux.range(1,20)
+                .parallel(4)
+                .runOn(Schedulers.boundedElastic())
                 .doOnNext(i -> printThreadName("next " + i))
-                .subscribeOn(Schedulers.boundedElastic())
+                .sequential()
+                .publishOn(Schedulers.parallel())
                 .subscribe(v -> printThreadName("sub " + v));
 
         Util.sleepSeconds(5);
