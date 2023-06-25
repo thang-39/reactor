@@ -14,7 +14,7 @@ public class Lec06Assignment {
 
     public static void main(String[] args) {
         Map<String, Function<Flux<ProductOrder>, Flux<ProductOrder>>> map = Map.of(
-                "Kids", OrderProcessor.kidsProcessing(),
+                "Kids", OrderProcessor.kidsProcessingWithMono(),
                 "Automotive", OrderProcessor.automotiveProcessing()
         );
 
